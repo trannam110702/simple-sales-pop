@@ -17,13 +17,13 @@
     react-screentype-hook "^1.0.18"
     react-step-wizard "^5.3.6"
 
-"@avada/console@^0.0.27-alpha.4":
-  version "0.0.27-alpha.4"
-  resolved "https://registry.avada.io/@avada%2fconsole/-/console-0.0.27-alpha.4.tgz#3ec3b67d75aca72cf76adffcf2b0d7c1ed642d6a"
-  integrity sha512-0sNOOjGunnw/7+IMJNr7QSJdvEOrjF3uyipe6mSzuuc4IMdQROZNsqhpuPPhvk8otVd1amAFpoARAbZgWlhwcg==
+"@avada/console@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.avada.io/@avada%2fconsole/-/console-1.0.0.tgz#82a9ad9a8cc25d373b93139a14713f2ef2fddfe8"
+  integrity sha512-EOnpbsxqdADNcsFikC2VIi0+5MMkmjLw/sG3zfBIkLz9YU0BECh5zs6HD8JQ7PTToHs2ECmu2VMN3ScdCQXu1g==
   dependencies:
     commander "^3.0.2"
-    firebase-admin "^9.9.0"
+    firebase-admin "^11.5.0"
     fs-extra "^8.1.0"
     http-proxy "^1.18.0"
     js-yaml "^3.13.1"

@@ -70,19 +70,28 @@ export default function AppNavigation() {
           {
             url: '/',
             icon: HomeMajor,
-            label: 'Dashboard',
+            label: 'Home',
             selected: location.pathname === getUrl('/'),
             onClick: () => {
               history.push('/');
             }
           },
           {
-            url: '/samples',
+            url: '/notifications',
             icon: ShareMinor,
-            label: 'Samples',
+            label: 'Notifications',
             selected: location.pathname === getUrl('/samples'),
             onClick: () => {
-              history.push('/samples');
+              history.push('/notifications');
+            }
+          },
+          {
+            url: '/settings',
+            icon: SettingsMajor,
+            label: 'Settings',
+            selected: location.pathname === getUrl('/samples'),
+            onClick: () => {
+              history.push('/settings');
             }
           }
         ].reduce(prepareMenu, [])}

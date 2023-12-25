@@ -41,7 +41,7 @@ export default function AppTopBar({isNavOpen, toggleOpenNav}) {
             <img alt="Avada App Name" src={LOGO_URL} width={LOGO_WIDTH} />
             <DisplayText size="small">
               <Link url="/" removeUnderline>
-                App Name
+                Simple Sales Pop
               </Link>
             </DisplayText>
             {isLocal && (
