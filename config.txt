@@ -1,1 +1,2 @@
 export GOOGLE_APPLICATION_CREDENTIALS=serviceAccount.development.json
+admin-access-token: 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

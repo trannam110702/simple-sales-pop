@@ -22,3 +22,21 @@ export async function getShopInfoByShopId(id) {
   const [doc] = docs.docs;
   return presentDataAndFormatDate(doc);
 }
+
+/**
+ * Get shop ID by given shop domain
+ *
+ * @param {string} domain
+ * @return {Promise<string>}
+ */
+export async function getShopByShopDomain(domain) {
+  const docs = await shopInfosRef
+    .where('myshopifyDomain', '==', domain)
+    .limit(1)
+    .get();
+  if (docs.empty) {
+    return null;
+  }
+  const [doc] = docs.docs;
+  return doc.data();
+}

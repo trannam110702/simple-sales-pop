@@ -1,4 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import {Icon} from '@shopify/polaris';
+import {TickMinor} from '@shopify/polaris-icons';
+import toTimeAgo from '../../helpers/utils/toTimeAgo';
 import './NoticationPopup.scss';
 
 const NotificationPopup = ({
@@ -6,8 +10,9 @@ const NotificationPopup = ({
   city = 'New York',
   country = 'United States',
   productName = 'Puffer Jacket With Hidden Hood',
-  timestamp = 'a day ago',
-  productImage = 'http://paris.mageplaza.com/images/shop/single/big-1.jpg'
+  timestamp = new Date().toISOString(),
+  productImage = 'https://dotilo.com/image/catalog/coupon/aotron/den.jpg',
+  options
 }) => {
   return (
     <div className="Avava-SP__Wrapper fadeInUp animated">
@@ -24,11 +29,16 @@ const NotificationPopup = ({
               <div className={'Avada-SP__Title'}>
                 {firstName} in {city}, {country}
               </div>
-              <div className={'Avada-SP__Subtitle'}>purchased {productName}</div>
+              <div
+                className={`Avada-SP__Subtitle ${options?.truncateProductName ? 'truncate' : ''}`}
+              >
+                Purchased {productName}
+              </div>
               <div className={'Avada-SP__Footer'}>
-                {timestamp}{' '}
+                {options?.hideTimeAgo ? null : toTimeAgo(new Date(timestamp))}
                 <span className="uni-blue">
-                  <i className="fa fa-check" aria-hidden="true" /> by Avada
+                  <Icon source={TickMinor} />
+                  <div>by Avada</div>
                 </span>
               </div>
             </div>
@@ -38,7 +48,13 @@ const NotificationPopup = ({
     </div>
   );
 };
-
-NotificationPopup.propTypes = {};
-
+NotificationPopup.propTypes = {
+  firstName: PropTypes.string,
+  city: PropTypes.string,
+  country: PropTypes.string,
+  productName: PropTypes.string,
+  timestamp: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  productImage: PropTypes.string,
+  options: PropTypes.object
+};
 export default NotificationPopup;

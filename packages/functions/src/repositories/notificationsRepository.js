@@ -1,0 +1,79 @@
+import {Firestore} from '@google-cloud/firestore';
+import prepareDocs from '../helpers/utils/prepareDocs';
+
+const firestore = new Firestore();
+const notifiactionsCollection = firestore.collection('notifications');
+
+/**
+ * Retrieves notifications by shop ID.
+ * @param {string} shopId - The ID of the shop.
+ * @param {object} reqQuery - The request query parameters.
+ * @param {string} reqQuery.sort - The sorting order for the notifications.
+ * @param {number} reqQuery.limit - The maximum number of notifications to retrieve.
+ * @returns {Array<object>} - An array of notifications.
+ */
+export async function getByShopId(shopId, reqQuery) {
+  let query = notifiactionsCollection;
+  query = query.where('shopId', '==', shopId);
+  if (reqQuery.sort) {
+    query = query.orderBy('timestamp', reqQuery.sort);
+  }
+  if (reqQuery.limit) {
+    query = query.limit(Number(reqQuery.limit));
+  }
+  const querySnapshot = await query.get();
+  return querySnapshot.docs.map(prepareDocs);
+}
+
+/**
+ * Retrieves notifications by shop domain.
+ * @param {string} shopDomain - The domain of the shop.
+ * @param {object} reqQuery - The request query parameters.
+ * @param {string} reqQuery.sort - The sorting order for the notifications.
+ * @param {number} reqQuery.limit - The maximum number of notifications to retrieve.
+ * @returns {Array<object>} - An array of notifications.
+ */
+export async function getByShopDomain(shopDomain, reqQuery) {
+  let query = notifiactionsCollection;
+  query = query.where('shopDomain', '==', shopDomain);
+  if (reqQuery.sort) {
+    query = query.orderBy('timestamp', reqQuery.sort);
+  }
+  if (reqQuery.limit) {
+    query = query.limit(Number(reqQuery.limit));
+  }
+  const querySnapshot = await query.get();
+  return querySnapshot.docs.map(prepareDocs);
+}
+
+/**
+ * Creates notifications for a specific shop by shopId.
+ * @param {string} shopId - The ID of the shop.
+ * @param {Object|Object[]} data - The notification data or an array of notification data.
+ * @returns {Promise<void>} - A promise that resolves when the notifications are created.
+ */
+export async function createByShopId(shopId, data) {
+  if (typeof data === 'object' && !Array.isArray(data)) {
+    data = [data];
+  }
+  const batch = firestore.batch();
+  data.forEach(notification => {
+    const docRef = notifiactionsCollection.doc();
+    batch.set(docRef, {...notification, shopId});
+  });
+  await batch.commit();
+}
+
+/**
+ * Deletes notifications by their IDs.
+ * @param {string[]} ids - An array of notification IDs to delete.
+ * @returns {Promise<void>} - A promise that resolves when the notifications are deleted.
+ */
+export async function deleteByIds(ids) {
+  const batch = firestore.batch();
+  ids.forEach(id => {
+    const docRef = notifiactionsCollection.doc(id);
+    batch.delete(docRef);
+  });
+  await batch.commit();
+}

@@ -1,5 +1,18 @@
 import React, {useState} from 'react';
-import {Layout, Page, TextStyle, ResourceList, ResourceItem, Avatar} from '@shopify/polaris';
+import {
+  Layout,
+  Page,
+  ResourceList,
+  ResourceItem,
+  Stack,
+  Pagination,
+  Card,
+  SkeletonBodyText
+} from '@shopify/polaris';
+import NotificationPopup from '../../components/NotificationPopup/NotificationPopup';
+import useFetchApi from '../../hooks/api/useFetchApi';
+import useDeleteApi from '../../hooks/api/useDeleteApi';
+import './styles.css';
 
 /**
  * Notifications page
@@ -8,71 +21,52 @@ import {Layout, Page, TextStyle, ResourceList, ResourceItem, Avatar} from '@shop
  */
 export default function Notifications() {
   const [selectedItems, setSelectedItems] = useState([]);
-  const [sortValue, setSortValue] = useState('DATE_MODIFIED_DESC');
+  const [sortValue, setSortValue] = useState('asc');
+  const {data: notifications, loading, fetchApi: fetchNotifications} = useFetchApi({
+    url: '/notifications',
+    initQueries: {limit: 30, sort: sortValue}
+  });
+  const {deleting, handleDelete} = useDeleteApi({url: '/notifications'});
 
   const resourceName = {
     singular: 'notifcation',
     plural: 'notifcations'
   };
 
-  const items = [
-    {
-      id: 112,
-      url: 'customers/341',
-      name: 'Mae Jemison',
-      location: 'Decatur, USA',
-      latestOrderUrl: 'orders/1456'
-    },
-    {
-      id: 212,
-      url: 'customers/256',
-      name: 'Ellen Ochoa',
-      location: 'Los Angeles, USA',
-      latestOrderUrl: 'orders/1457'
-    }
-  ];
-
   const promotedBulkActions = [
     {
-      content: 'Edit customers',
-      onAction: () => console.log('Todo: implement bulk edit')
-    }
-  ];
-
-  const bulkActions = [
-    {
-      content: 'Add tags',
-      onAction: () => console.log('Todo: implement bulk add tags')
-    },
-    {
-      content: 'Remove tags',
-      onAction: () => console.log('Todo: implement bulk remove tags')
-    },
-    {
-      content: 'Delete customers',
-      onAction: () => console.log('Todo: implement bulk delete')
+      content: 'Delete',
+      onAction: async () => {
+        await handleDelete({ids: selectedItems});
+        await fetchNotifications('/notifications', {sort: sortValue, limit: 30});
+        setSelectedItems([]);
+      }
     }
   ];
 
   function renderItem(item) {
-    const {id, url, name, location, latestOrderUrl} = item;
-    const media = <Avatar customer size="medium" name={name} />;
-    const shortcutActions = latestOrderUrl
-      ? [{content: 'View latest order', url: latestOrderUrl}]
-      : null;
+    const {id, firstName, city, country, productName, timestamp, productImage} = item;
+    const ordetTime = new Date(timestamp);
     return (
-      <ResourceItem
-        id={id}
-        url={url}
-        media={media}
-        accessibilityLabel={`View details for ${name}`}
-        shortcutActions={shortcutActions}
-        persistActions
-      >
-        <h3>
-          <TextStyle variation="strong">{name}</TextStyle>
-        </h3>
-        <div>{location}</div>
+      <ResourceItem id={id}>
+        <Stack>
+          <Stack.Item fill>
+            <NotificationPopup
+              firstName={firstName}
+              city={city}
+              country={country}
+              productName={productName}
+              timestamp={timestamp}
+              productImage={productImage}
+            />
+          </Stack.Item>
+          <Stack.Item>
+            <p>
+              From {ordetTime.toLocaleString('default', {month: 'long'})} {ordetTime.getDate()},
+            </p>
+            <p style={{textAlign: 'end'}}>{ordetTime.getFullYear()}</p>
+          </Stack.Item>
+        </Stack>
       </ResourceItem>
     );
   }
@@ -81,24 +75,40 @@ export default function Notifications() {
     <Page title="Notifications" subtitle="List of sales notifcation from Shopify" fullWidth>
       <Layout>
         <Layout.Section>
-          <ResourceList
-            resourceName={resourceName}
-            items={items}
-            renderItem={renderItem}
-            selectedItems={selectedItems}
-            onSelectionChange={setSelectedItems}
-            promotedBulkActions={promotedBulkActions}
-            bulkActions={bulkActions}
-            sortValue={sortValue}
-            sortOptions={[
-              {label: 'Newest update', value: 'DATE_MODIFIED_DESC'},
-              {label: 'Oldest update', value: 'DATE_MODIFIED_ASC'}
-            ]}
-            onSortChange={selected => {
-              setSortValue(selected);
-              console.log(`Sort option changed to ${selected}.`);
-            }}
-          />
+          {loading || deleting ? (
+            <Card>
+              <Card.Section>
+                <div style={{textAlign: 'center'}}>
+                  <SkeletonBodyText lines={10} />
+                </div>
+              </Card.Section>
+            </Card>
+          ) : (
+            <Card>
+              <ResourceList
+                resourceName={resourceName}
+                items={notifications}
+                renderItem={renderItem}
+                selectedItems={selectedItems}
+                onSelectionChange={setSelectedItems}
+                promotedBulkActions={promotedBulkActions}
+                sortValue={sortValue}
+                sortOptions={[
+                  {label: 'Newest update', value: 'desc'},
+                  {label: 'Oldest update', value: 'asc'}
+                ]}
+                onSortChange={selected => {
+                  setSortValue(selected);
+                  fetchNotifications('/notifications', {sort: selected, limit: 30});
+                }}
+              />
+            </Card>
+          )}
+        </Layout.Section>
+        <Layout.Section>
+          <div style={{display: 'flex', justifyContent: 'center'}}>
+            <Pagination />
+          </div>
         </Layout.Section>
       </Layout>
     </Page>
