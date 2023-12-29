@@ -1,5 +1,22 @@
 import {createByShopId as createNotifications} from '../repositories/notificationsRepository';
 
+const lineItemToNotification = async (shopify, shopInfo, product, order) => {
+  const productInfo = await shopify.product.get(product.product_id, {
+    fields: 'id, title, image'
+  });
+  return {
+    city: order.shipping_address.city,
+    country: order.shipping_address.country,
+    firstName: order.shipping_address.first_name,
+    productId: productInfo.id,
+    productImage: productInfo.image.src,
+    productName: productInfo.title,
+    shopDomain: shopInfo.shopDomain,
+    shopId: shopInfo.id,
+    timestamp: new Date(order.created_at)
+  };
+};
+
 /**
  * Syncs orders to notifications.
  *
@@ -10,27 +27,9 @@ import {createByShopId as createNotifications} from '../repositories/notificatio
  */
 const syncOrdersToNotifiactions = async (shopify, shopInfo, orders) => {
   const notifications = await Promise.all(
-    orders
-      .map(order => {
-        return order.line_items.map(async product => {
-          const productInfo = await shopify.product.get(product.product_id, {
-            fields: 'id, title, image'
-          });
-          return {
-            city: order.shipping_address.city,
-            country: order.shipping_address.country,
-            firstname: order.shipping_address.first_name,
-            productId: productInfo.id,
-            productImage: productInfo.image.src,
-            productName: productInfo.title,
-            shopDomain: shopInfo.shopDomain,
-            shopId: shopInfo.id,
-            timestamp: new Date(order.created_at)
-          };
-        });
-      })
-      .flat(Infinity)
+    orders.map(order => lineItemToNotification(shopify, shopInfo, order.line_items[0], order))
   );
   await createNotifications(shopInfo.id, notifications);
 };
+
 export default syncOrdersToNotifiactions;

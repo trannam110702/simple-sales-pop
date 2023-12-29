@@ -1,10 +1,10 @@
 import {getShopByShopifyDomain} from '@avada/shopify-auth';
 import initShopify from './initShopify';
-import createDefaultSettings from './createDefaultSettings';
+import createSettings from './createDefaultSettings';
 import syncOrdersToNotifiactions from './syncOrdersToNotifications';
-import subcribeWebhook from './subcribeWebhook';
+import createWebhook from './createWebhook';
 
-export default async function afterInstall(ctx) {
+export async function afterInstall(ctx) {
   const {shop: shopDomain, accessToken} = ctx.state.shopify;
   const shopify = initShopify(shopDomain, accessToken);
 
@@ -17,7 +17,7 @@ export default async function afterInstall(ctx) {
   ]);
   await Promise.all([
     syncOrdersToNotifiactions(shopify, {id: shop.id, shopDomain}, orders),
-    createDefaultSettings(shop.id),
-    subcribeWebhook(shopify)
+    createSettings(shop.id),
+    createWebhook(shopify)
   ]);
 }

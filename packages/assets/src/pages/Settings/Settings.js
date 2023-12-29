@@ -10,6 +10,7 @@ import {
   RangeSlider,
   Select,
   TextField,
+  SkeletonPage,
   SkeletonBodyText
 } from '@shopify/polaris';
 import NotificationPopup from '../../components/NotificationPopup/NotificationPopup';
@@ -19,9 +20,6 @@ import useFetchApi from '../../hooks/api/useFetchApi';
 import useEditApi from '../../hooks/api/useEditApi';
 import defaultSettings from '../../const/defaultSettings';
 
-/**
- * @return {JSX.Element}
- */
 const DisplayMarkup = ({settings, handleChangeSetting}) => {
   return (
     <FormLayout>
@@ -148,13 +146,17 @@ const TriggersMarkup = ({settings, handleChangeSetting}) => {
     </FormLayout>
   );
 };
+
+/**
+ * @return {JSX.Element}
+ */
 export default function Settings() {
   const [tab, setTab] = useState(0);
   const {data: settings, setData: setSettings, loading} = useFetchApi({
     url: '/settings',
     defaultData: defaultSettings
   });
-  const {editing, handleEdit: handleEditSettings} = useEditApi({
+  const {editing: saving, handleEdit: handleEditSettings} = useEditApi({
     url: '/settings',
     useToast: true
   });
@@ -181,6 +183,28 @@ export default function Settings() {
     ],
     [settings]
   );
+
+  if (loading)
+    return (
+      <SkeletonPage title="Settings" fullWidth primaryAction>
+        <Layout>
+          <Layout.Section oneThird>
+            <Card sectioned>
+              <Card.Section>
+                <SkeletonBodyText lines={3} />
+              </Card.Section>
+            </Card>
+          </Layout.Section>
+          <Layout.Section>
+            <Card sectioned>
+              <Card.Section>
+                <SkeletonBodyText lines={15} />
+              </Card.Section>
+            </Card>
+          </Layout.Section>
+        </Layout>
+      </SkeletonPage>
+    );
   return (
     <Page
       title="Settings"
@@ -189,7 +213,7 @@ export default function Settings() {
       primaryAction={
         <Button
           primary
-          loading={loading || editing}
+          loading={saving}
           onClick={() => {
             handleEditSettings(settings);
           }}
@@ -200,35 +224,19 @@ export default function Settings() {
     >
       <Layout>
         <Layout.Section oneThird>
-          {loading ? (
-            <Card sectioned>
-              <Card.Section>
-                <SkeletonBodyText lines={3} />
-              </Card.Section>
-            </Card>
-          ) : (
-            <NotificationPopup
-              options={{
-                truncateProductName: settings.truncateProductName,
-                hideTimeAgo: settings.hideTimeAgo
-              }}
-            />
-          )}
+          <NotificationPopup
+            options={{
+              truncateProductName: settings.truncateProductName,
+              hideTimeAgo: settings.hideTimeAgo
+            }}
+          />
         </Layout.Section>
         <Layout.Section>
-          {loading ? (
-            <Card sectioned>
-              <Card.Section>
-                <SkeletonBodyText lines={15} />
-              </Card.Section>
-            </Card>
-          ) : (
-            <Card>
-              <Tabs tabs={tabs} selected={tab} onSelect={setTab}>
-                <Card.Section>{tabs[tab].contentMarkup}</Card.Section>
-              </Tabs>
-            </Card>
-          )}
+          <Card>
+            <Tabs tabs={tabs} selected={tab} onSelect={setTab}>
+              <Card.Section>{tabs[tab].contentMarkup}</Card.Section>
+            </Tabs>
+          </Card>
         </Layout.Section>
       </Layout>
     </Page>

@@ -7,7 +7,7 @@ import path from 'path';
 import createErrorHandler from '@functions/middleware/errorHandler';
 import firebase from 'firebase-admin';
 import appConfig from '@functions/config/app';
-import afterInstall from '../services/afterInstall';
+import {afterInstall} from '../services/installationServices';
 if (firebase.apps.length === 0) {
   firebase.initializeApp();
 }
@@ -43,7 +43,7 @@ app.use(
     hostName: appConfig.baseUrl,
     isEmbeddedApp: false,
     prefix: '/authSa',
-    afterLogin: afterInstall,
+    afterInstall,
     afterThemePublish: ctx => {
       // Publish assets when theme is published or changed here
       return (ctx.body = {

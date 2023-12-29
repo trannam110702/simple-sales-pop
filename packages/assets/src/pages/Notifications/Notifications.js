@@ -2,12 +2,13 @@ import React, {useState} from 'react';
 import {
   Layout,
   Page,
+  SkeletonPage,
   ResourceList,
   ResourceItem,
   Stack,
   Pagination,
   Card,
-  SkeletonBodyText
+  Spinner
 } from '@shopify/polaris';
 import NotificationPopup from '../../components/NotificationPopup/NotificationPopup';
 import useFetchApi from '../../hooks/api/useFetchApi';
@@ -21,7 +22,7 @@ import './styles.css';
  */
 export default function Notifications() {
   const [selectedItems, setSelectedItems] = useState([]);
-  const [sortValue, setSortValue] = useState('asc');
+  const [sortValue, setSortValue] = useState('desc');
   const {data: notifications, loading, fetchApi: fetchNotifications} = useFetchApi({
     url: '/notifications',
     initQueries: {limit: 30, sort: sortValue}
@@ -71,39 +72,41 @@ export default function Notifications() {
     );
   }
 
+  if (loading || deleting)
+    return (
+      <SkeletonPage title="Notifications" fullWidth>
+        <Card>
+          <Card.Section>
+            <div style={{textAlign: 'center'}}>
+              <Spinner />
+            </div>
+          </Card.Section>
+        </Card>
+      </SkeletonPage>
+    );
   return (
     <Page title="Notifications" subtitle="List of sales notifcation from Shopify" fullWidth>
       <Layout>
         <Layout.Section>
-          {loading || deleting ? (
-            <Card>
-              <Card.Section>
-                <div style={{textAlign: 'center'}}>
-                  <SkeletonBodyText lines={10} />
-                </div>
-              </Card.Section>
-            </Card>
-          ) : (
-            <Card>
-              <ResourceList
-                resourceName={resourceName}
-                items={notifications}
-                renderItem={renderItem}
-                selectedItems={selectedItems}
-                onSelectionChange={setSelectedItems}
-                promotedBulkActions={promotedBulkActions}
-                sortValue={sortValue}
-                sortOptions={[
-                  {label: 'Newest update', value: 'desc'},
-                  {label: 'Oldest update', value: 'asc'}
-                ]}
-                onSortChange={selected => {
-                  setSortValue(selected);
-                  fetchNotifications('/notifications', {sort: selected, limit: 30});
-                }}
-              />
-            </Card>
-          )}
+          <Card>
+            <ResourceList
+              resourceName={resourceName}
+              items={notifications}
+              renderItem={renderItem}
+              selectedItems={selectedItems}
+              onSelectionChange={setSelectedItems}
+              promotedBulkActions={promotedBulkActions}
+              sortValue={sortValue}
+              sortOptions={[
+                {label: 'Newest update', value: 'desc'},
+                {label: 'Oldest update', value: 'asc'}
+              ]}
+              onSortChange={selected => {
+                setSortValue(selected);
+                fetchNotifications('/notifications', {sort: selected, limit: 30});
+              }}
+            />
+          </Card>
         </Layout.Section>
         <Layout.Section>
           <div style={{display: 'flex', justifyContent: 'center'}}>
