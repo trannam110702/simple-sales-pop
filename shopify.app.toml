@@ -2,7 +2,7 @@
 
 name = "Simple sales pop"
 client_id = "245a105223c9ed3d0cde809d791aab60"
-application_url = "https://genealogy-lf-penalty-techrepublic.trycloudflare.com/auth/shopify"
+application_url = "https://famous-assessments-xerox-epson.trycloudflare.com/auth/shopify"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://genealogy-lf-penalty-techrepublic.trycloudflare.com/auth/shopify/callback",
-  "https://genealogy-lf-penalty-techrepublic.trycloudflare.com/authSa/shopify/callback",
-  "https://genealogy-lf-penalty-techrepublic.trycloudflare.com/auth/shopify/embed/callback",
+  "https://famous-assessments-xerox-epson.trycloudflare.com/auth/shopify/callback",
+  "https://famous-assessments-xerox-epson.trycloudflare.com/authSa/shopify/callback",
+  "https://famous-assessments-xerox-epson.trycloudflare.com/auth/shopify/embed/callback",
   "https://localhost:3000/auth/shopify/callback",
   "https://localhost:3000/authSa/shopify/callback",
   "https://localhost:3000/auth/shopify/embed/callback"

@@ -3,9 +3,13 @@ import {getByShopDomain as getSettingsByShopDomain} from '../repositories/settin
 
 export const getNotifications = async ctx => {
   try {
+    const [data, settings] = await Promise.all([
+      getNotifitcationsByShopDomain(ctx.query.shopifyDomain, ctx.query),
+      getSettingsByShopDomain(ctx.query.shopifyDomain)
+    ]);
     ctx.body = {
-      data: await getNotifitcationsByShopDomain(ctx.query.shopifyDomain, ctx.query),
-      settings: await getSettingsByShopDomain(ctx.query.shopifyDomain)
+      data,
+      settings
     };
     ctx.status = 200;
   } catch (e) {

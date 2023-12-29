@@ -1,5 +1,5 @@
 import initShopify from '../services/initShopify';
-import syncOrdersToNotifiactions from '../services/syncOrdersToNotifications';
+import {createNotificationsFromOrders} from '../services/syncOrdersToNotifications';
 import {getShopByShopifyDomain} from '@avada/shopify-auth';
 
 export const createNotification = async ctx => {
@@ -7,7 +7,7 @@ export const createNotification = async ctx => {
     const domainName = ctx.get('X-Shopify-Shop-Domain');
     const shop = await getShopByShopifyDomain(domainName);
     const shopify = initShopify(shop.domain, shop.accessToken);
-    await syncOrdersToNotifiactions(shopify, {...shop, shopDomain: domainName}, [ctx.req.body]);
+    await createNotificationsFromOrders(shopify, {...shop, shopDomain: domainName}, [ctx.req.body]);
     ctx.status = 200;
   } catch (e) {
     console.log(e);

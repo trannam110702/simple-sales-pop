@@ -13,7 +13,6 @@ import {
 import NotificationPopup from '../../components/NotificationPopup/NotificationPopup';
 import useFetchApi from '../../hooks/api/useFetchApi';
 import useDeleteApi from '../../hooks/api/useDeleteApi';
-import './styles.css';
 
 /**
  * Notifications page
@@ -78,7 +77,7 @@ export default function Notifications() {
         <Card>
           <Card.Section>
             <div style={{textAlign: 'center'}}>
-              <Spinner />
+              <Spinner size="small" />
             </div>
           </Card.Section>
         </Card>

@@ -1,4 +1,4 @@
-import {createSettings} from '../repositories/settingsRepository';
+import {createSettings, deleteSettings} from '../repositories/settingsRepository';
 import defaultSettings from '../const/defaultSettings';
 
 /**
@@ -7,5 +7,6 @@ import defaultSettings from '../const/defaultSettings';
  * @returns {Promise} - A promise that resolves with the created settings.
  */
 export default async function createDefaultSettings(shopId) {
+  await deleteSettings(shopId);
   return await createSettings({...defaultSettings, shopId});
 }

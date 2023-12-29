@@ -49,3 +49,18 @@ export async function updateByShopId(shopId, data) {
 export async function createSettings(data) {
   return settingsCollection.add(data);
 }
+
+/**
+ * Deletes settings with the specified shopId.
+ * @param {string} shopId - The ID of the shop.
+ * @returns {Promise<void>} - A promise that resolves when the deletion is complete.
+ */
+export async function deleteSettings(shopId) {
+  const querySnapshot = await settingsCollection.where('shopId', '==', shopId).get();
+  if (querySnapshot.empty) {
+    return;
+  }
+  const batch = firestore.batch();
+  querySnapshot.docs.forEach(doc => batch.delete(doc.ref));
+  return batch.commit();
+}

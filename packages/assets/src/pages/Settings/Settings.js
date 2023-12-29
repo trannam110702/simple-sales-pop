@@ -2,7 +2,6 @@ import React, {useState, useCallback, useMemo} from 'react';
 import {
   Layout,
   Page,
-  Button,
   Tabs,
   Card,
   FormLayout,
@@ -11,7 +10,8 @@ import {
   Select,
   TextField,
   SkeletonPage,
-  SkeletonBodyText
+  SkeletonBodyText,
+  Heading
 } from '@shopify/polaris';
 import NotificationPopup from '../../components/NotificationPopup/NotificationPopup';
 import DesktopPositionInput from '../../components/DesktopPositionInput/DesktopPositionInput';
@@ -23,7 +23,7 @@ import defaultSettings from '../../const/defaultSettings';
 const DisplayMarkup = ({settings, handleChangeSetting}) => {
   return (
     <FormLayout>
-      <div style={{marginBottom: '1rem', fontWeight: 'bold'}}>APPEARANCE</div>
+      <Heading>Display</Heading>
       <DesktopPositionInput
         value={settings.position}
         onChange={value => handleChangeSetting('position', value)}
@@ -41,7 +41,7 @@ const DisplayMarkup = ({settings, handleChangeSetting}) => {
         checked={settings.truncateProductName}
         onChange={value => handleChangeSetting('truncateProductName', value)}
       ></Checkbox>
-      <div style={{marginBottom: '1rem', fontWeight: 'bold'}}>TIMING</div>
+      <Heading>TIMING</Heading>
       <FormLayout.Group>
         <RangeSlider
           output
@@ -52,8 +52,8 @@ const DisplayMarkup = ({settings, handleChangeSetting}) => {
           onChange={value => handleChangeSetting('displayDuration', value)}
           helpText={<span>How long each pop will be displayed on your page.</span>}
           suffix={
-            <div style={{padding: '1rem', border: '1px solid gray'}}>
-              {settings.displayDuration} second(s)
+            <div style={{width: '120px'}}>
+              <TextField disabled suffix="second(s)" value={settings.displayDuration.toString()} />
             </div>
           }
         />
@@ -66,8 +66,8 @@ const DisplayMarkup = ({settings, handleChangeSetting}) => {
           onChange={value => handleChangeSetting('firstDelay', value)}
           helpText={<span>The delay time before the first notifications.</span>}
           suffix={
-            <div style={{padding: '1rem', border: '1px solid gray'}}>
-              {settings.firstDelay} second(s)
+            <div style={{width: '120px'}}>
+              <TextField disabled suffix="second(s)" value={settings.firstDelay.toString()} />
             </div>
           }
         />
@@ -83,12 +83,11 @@ const DisplayMarkup = ({settings, handleChangeSetting}) => {
           onChange={value => handleChangeSetting('popsInterval', value)}
           helpText={<span>The time interval between two popup notifications.</span>}
           suffix={
-            <div style={{padding: '1rem', border: '1px solid gray'}}>
-              {settings.popsInterval} second(s)
+            <div style={{width: '120px'}}>
+              <TextField disabled suffix="second(s)" value={settings.popsInterval.toString()} />
             </div>
           }
         />
-
         <RangeSlider
           output
           label="Maxium of popups"
@@ -103,8 +102,8 @@ const DisplayMarkup = ({settings, handleChangeSetting}) => {
             </span>
           }
           suffix={
-            <div style={{padding: '1rem', border: '1px solid gray'}}>
-              {settings.maxPopsDisplay} pop(s)
+            <div style={{width: '120px'}}>
+              <TextField disabled suffix="pop(s)" value={settings.maxPopsDisplay.toString()} />
             </div>
           }
         />
@@ -151,7 +150,7 @@ const TriggersMarkup = ({settings, handleChangeSetting}) => {
  * @return {JSX.Element}
  */
 export default function Settings() {
-  const [tab, setTab] = useState(0);
+  const [selectedTab, setSelectedTab] = useState(0);
   const {data: settings, setData: setSettings, loading} = useFetchApi({
     url: '/settings',
     defaultData: defaultSettings
@@ -210,17 +209,13 @@ export default function Settings() {
       title="Settings"
       subtitle="Decide how your notifications will display"
       fullWidth
-      primaryAction={
-        <Button
-          primary
-          loading={saving}
-          onClick={() => {
-            handleEditSettings(settings);
-          }}
-        >
-          Save
-        </Button>
-      }
+      primaryAction={{
+        content: 'Save',
+        onAction: () => {
+          handleEditSettings(settings);
+        },
+        loading: saving
+      }}
     >
       <Layout>
         <Layout.Section oneThird>
@@ -233,8 +228,8 @@ export default function Settings() {
         </Layout.Section>
         <Layout.Section>
           <Card>
-            <Tabs tabs={tabs} selected={tab} onSelect={setTab}>
-              <Card.Section>{tabs[tab].contentMarkup}</Card.Section>
+            <Tabs tabs={tabs} selected={selectedTab} onSelect={setSelectedTab}>
+              <Card.Section>{tabs[selectedTab].contentMarkup}</Card.Section>
             </Tabs>
           </Card>
         </Layout.Section>
