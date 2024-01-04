@@ -1,4 +1,3 @@
-# Created by .ignore support plugin (hsz.mobi)
 ### Node template
 # Logs
 logs
@@ -65,7 +64,8 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env*
+.env
+.env.test
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -88,4 +88,22 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-.eslintrc.js
+# Generated files
+static/
+lib/
+
+# Views
+views/
+
+# Storage
+storage/
+
+# Webpack
+webpack/
+
+# Git
+git-hooks/
+
+# Test
+tests/
+

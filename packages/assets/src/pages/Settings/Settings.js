@@ -97,7 +97,7 @@ const DisplayMarkup = ({settings, handleChangeSetting}) => {
           onChange={value => handleChangeSetting('maxPopsDisplay', value)}
           helpText={
             <span>
-              The maxium number of popups are allowed to show after page loading. Maxium number is
+              The maximum number of popups are allowed to show after page loading. Maximum number is
               80.
             </span>
           }
@@ -204,6 +204,7 @@ export default function Settings() {
         </Layout>
       </SkeletonPage>
     );
+
   return (
     <Page
       title="Settings"
@@ -220,10 +221,8 @@ export default function Settings() {
       <Layout>
         <Layout.Section oneThird>
           <NotificationPopup
-            options={{
-              truncateProductName: settings.truncateProductName,
-              hideTimeAgo: settings.hideTimeAgo
-            }}
+            truncateProductName={settings.truncateProductName}
+            hideTimeAgo={settings.hideTimeAgo}
           />
         </Layout.Section>
         <Layout.Section>

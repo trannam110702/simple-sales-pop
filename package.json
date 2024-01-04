@@ -12,7 +12,7 @@
     "start": "avada app:serve",
     "logs": "firebase functions:log",
     "emulators-all": "firebase emulators:start",
-    "emulators": "firebase emulators:start --only functions,hosting",
+    "emulators": "export GOOGLE_APPLICATION_CREDENTIALS=serviceAccount.development.json && firebase emulators:start --only functions,hosting",
     "predeploy": "yarn workspace @avada/assets run production && yarn workspace @avada/functions run production",
     "eslint-fix": "npm --prefix packages/assets/ run eslint-fix && npm --prefix packages/functions/ run eslint-fix",
     "start-dev-embed": "npm run timeout && echo 'backend build running...' && concurrently \"yarn workspace @avada/functions run watch\"",

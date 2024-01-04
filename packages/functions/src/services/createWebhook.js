@@ -1,7 +1,9 @@
+import shopifyConfig from '@functions/config/shopify';
+
 const createWebhook = async shopify => {
   await deleteExistingWebhooks(shopify);
-  return await shopify.webhook.create({
-    address: 'https://b798-42-116-253-172.ngrok-free.app/webhooks/newOrder',
+  return shopify.webhook.create({
+    address: `https://${shopifyConfig.baseUrl}/webhooks/newOrder`,
     topic: 'orders/create',
     format: 'json'
   });

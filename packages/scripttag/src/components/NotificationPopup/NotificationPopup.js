@@ -13,10 +13,19 @@ const NotificationPopup = ({
   timestamp = new Date().toISOString(),
   productImage = 'https://dotilo.com/image/catalog/coupon/aotron/den.jpg',
   truncateProductName = false,
-  hideTimeAgo = false
+  hideTimeAgo = false,
+  displayDuration
 }) => {
+  const [fade, setFade] = React.useState(false);
+  React.useEffect(() => {
+    setFade(true);
+    const timeOut = setTimeout(() => {
+      setFade(false);
+    }, (displayDuration - 0.5) * 1000);
+    return () => clearTimeout(timeOut);
+  }, []);
   return (
-    <div className="Avava-SP__Wrapper fadeInUp animated">
+    <div className={`Avava-SP__Wrapper animated ${fade ? 'fadeInUp' : ''}`}>
       <div className="Avava-SP__Inner">
         <div className="Avava-SP__Container">
           <a href="#" className={'Avava-SP__LinkWrapper'}>
@@ -44,9 +53,18 @@ const NotificationPopup = ({
           </a>
         </div>
       </div>
+      <div
+        className="close"
+        onClick={() => {
+          document.querySelector('#Avada-SalePop').remove();
+        }}
+      >
+        <div>x</div>
+      </div>
     </div>
   );
 };
+
 NotificationPopup.propTypes = {
   firstName: PropTypes.string,
   city: PropTypes.string,
@@ -54,6 +72,9 @@ NotificationPopup.propTypes = {
   productName: PropTypes.string,
   timestamp: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   productImage: PropTypes.string,
-  options: PropTypes.object
+  options: PropTypes.object,
+  truncateProductName: PropTypes.bool,
+  hideTimeAgo: PropTypes.bool,
+  displayDuration: PropTypes.number
 };
 export default NotificationPopup;

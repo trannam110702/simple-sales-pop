@@ -3,6 +3,7 @@ import initShopify from './initShopify';
 import createSettings from './createDefaultSettings';
 import syncOrdersToNotifications from './syncOrdersToNotifications';
 import createWebhook from './createWebhook';
+import createScriptTags from './createScriptTags';
 
 export async function afterInstall(ctx) {
   const {shop: shopDomain, accessToken} = ctx.state.shopify;
@@ -13,5 +14,6 @@ export async function afterInstall(ctx) {
     syncOrdersToNotifications(shopify, {id: shop.id, shopDomain}),
     createSettings(shop.id),
     createWebhook(shopify)
+    // createScriptTags(shopify)
   ]);
 }
