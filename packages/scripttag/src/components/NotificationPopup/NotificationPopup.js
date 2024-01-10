@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Icon} from '@shopify/polaris';
-import {TickMinor} from '@shopify/polaris-icons';
 import toTimeAgo from '../../helpers/utils/toTimeAgo';
 import './NoticationPopup.scss';
 
@@ -45,7 +43,18 @@ const NotificationPopup = ({
               <div className={'Avada-SP__Footer'}>
                 {hideTimeAgo ? null : toTimeAgo(new Date(timestamp))}
                 <span className="uni-blue">
-                  <Icon source={TickMinor} />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="16"
+                    width="14"
+                    viewBox="0 0 448 512"
+                  >
+                    <path
+                      opacity="1"
+                      fill="#1E3050"
+                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+                    />
+                  </svg>
                   <div>by Avada</div>
                 </span>
               </div>

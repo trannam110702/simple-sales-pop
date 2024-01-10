@@ -18,7 +18,6 @@ import DesktopPositionInput from '../../components/DesktopPositionInput/DesktopP
 import PropTypes from 'prop-types';
 import useFetchApi from '../../hooks/api/useFetchApi';
 import useEditApi from '../../hooks/api/useEditApi';
-import defaultSettings from '../../const/defaultSettings';
 
 const DisplayMarkup = ({settings, handleChangeSetting}) => {
   return (
@@ -152,8 +151,7 @@ const TriggersMarkup = ({settings, handleChangeSetting}) => {
 export default function Settings() {
   const [selectedTab, setSelectedTab] = useState(0);
   const {data: settings, setData: setSettings, loading} = useFetchApi({
-    url: '/settings',
-    defaultData: defaultSettings
+    url: '/settings'
   });
   const {editing: saving, handleEdit: handleEditSettings} = useEditApi({
     url: '/settings',

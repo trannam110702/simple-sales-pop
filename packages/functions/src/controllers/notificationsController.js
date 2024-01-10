@@ -11,8 +11,16 @@ import {getCurrentShop} from '../helpers/auth';
  */
 export const getNotifications = async ctx => {
   try {
+    const {notifications, hasNext, hasPre} = await getNotificationsByShopId(
+      getCurrentShop(ctx),
+      ctx.req.query
+    );
     ctx.body = {
-      data: await getNotificationsByShopId(getCurrentShop(ctx), ctx.req.query),
+      data: notifications,
+      pageInfo: {
+        hasNext,
+        hasPre
+      },
       success: true
     };
     ctx.status = 200;

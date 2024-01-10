@@ -11,8 +11,8 @@ import {
   Spinner
 } from '@shopify/polaris';
 import NotificationPopup from '../../components/NotificationPopup/NotificationPopup';
-import useFetchApi from '../../hooks/api/useFetchApi';
 import useDeleteApi from '../../hooks/api/useDeleteApi';
+import usePaginate from '../../hooks/api/usePaginate';
 
 /**
  * Notifications page
@@ -22,23 +22,27 @@ import useDeleteApi from '../../hooks/api/useDeleteApi';
 export default function Notifications() {
   const [selectedItems, setSelectedItems] = useState([]);
   const [sortValue, setSortValue] = useState('desc');
-  const {data: notifications, loading, fetchApi: fetchNotifications} = useFetchApi({
+  const {
+    prevPage,
+    nextPage,
+    data: notifications,
+    pageInfo,
+    handleFetchApi: fetchNotifications,
+    loading,
+    onQueryChange
+  } = usePaginate({
     url: '/notifications',
-    initQueries: {limit: 30, sort: sortValue}
+    defaultSort: 'desc'
   });
-  const {deleting, handleDelete} = useDeleteApi({url: '/notifications'});
 
-  const resourceName = {
-    singular: 'notifcation',
-    plural: 'notifcations'
-  };
+  const {deleting, handleDelete} = useDeleteApi({url: '/notifications'});
 
   const promotedBulkActions = [
     {
       content: 'Delete',
       onAction: async () => {
         await handleDelete({ids: selectedItems});
-        await fetchNotifications('/notifications', {sort: sortValue, limit: 30});
+        await fetchNotifications();
         setSelectedItems([]);
       }
     }
@@ -71,7 +75,7 @@ export default function Notifications() {
     );
   }
 
-  if (loading || deleting)
+  if (deleting)
     return (
       <SkeletonPage title="Notifications" fullWidth>
         <Card>
@@ -89,7 +93,11 @@ export default function Notifications() {
         <Layout.Section>
           <Card>
             <ResourceList
-              resourceName={resourceName}
+              loading={loading}
+              resourceName={{
+                singular: 'notifcation',
+                plural: 'notifcations'
+              }}
               items={notifications}
               renderItem={renderItem}
               selectedItems={selectedItems}
@@ -102,14 +110,19 @@ export default function Notifications() {
               ]}
               onSortChange={selected => {
                 setSortValue(selected);
-                fetchNotifications('/notifications', {sort: selected, limit: 30});
+                onQueryChange('sort', selected, true);
               }}
             />
           </Card>
         </Layout.Section>
         <Layout.Section>
           <div style={{display: 'flex', justifyContent: 'center'}}>
-            <Pagination />
+            <Pagination
+              onNext={nextPage}
+              onPrevious={prevPage}
+              hasNext={pageInfo.hasNext}
+              hasPrevious={pageInfo.hasPre}
+            />
           </div>
         </Layout.Section>
       </Layout>

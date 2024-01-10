@@ -8,5 +8,5 @@ import defaultSettings from '../const/defaultSettings';
  */
 export default async function createDefaultSettings(shopId) {
   await deleteSettings(shopId);
-  return await createSettings({...defaultSettings, shopId});
+  await createSettings({...defaultSettings, shopId});
 }

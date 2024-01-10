@@ -120,6 +120,9 @@
   float: right;
   align-items: center;
   svg {
+    margin-right: 5px;
+  }
+  svg path {
     fill: #2196f3;
   }
   .Polaris-Icon {

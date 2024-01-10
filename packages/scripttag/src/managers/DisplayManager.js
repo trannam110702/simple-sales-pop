@@ -17,6 +17,11 @@ export default class DisplayManager {
     if (this.isShowPopUp(settings)) {
       this.insertContainer(settings.position);
       await delay(settings.firstDelay * 1000);
+
+      // for (const notifcation of this, notifications) {
+      //   // await this.displayOnePopUp(notifcation, settings);
+      // }
+
       notifications.forEach(async (notification, index) => {
         await delay((settings.popsInterval + settings.displayDuration) * index * 1000);
         await this.displayOnePopUp(notification, settings);
@@ -59,7 +64,6 @@ export default class DisplayManager {
     if (targetEl) {
       insertAfter(popupEl, targetEl);
     }
-
     return popupEl;
   }
 

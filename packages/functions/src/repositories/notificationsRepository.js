@@ -13,16 +13,20 @@ const notifiactionsCollection = firestore.collection('notifications');
  * @returns {Array<object>} - An array of notifications.
  */
 export async function getByShopId(shopId, reqQuery) {
-  let query = notifiactionsCollection;
-  query = query.where('shopId', '==', shopId);
-  if (reqQuery.sort) {
-    query = query.orderBy('timestamp', reqQuery.sort);
-  }
-  if (reqQuery.limit) {
-    query = query.limit(Number(reqQuery.limit));
-  }
+  let query = notifiactionsCollection.where('shopId', '==', shopId);
+  const offset = (reqQuery?.page - 1) * reqQuery?.limit;
+  const notifcationCount = (await query.count().get()).data().count;
+
+  query = query.orderBy('timestamp', reqQuery.sort ? reqQuery.sort : 'desc');
+  query = query.offset(offset);
+  query = query.limit(Number(reqQuery.limit ? reqQuery.limit : 30));
+
   const querySnapshot = await query.get();
-  return querySnapshot.docs.map(prepareDocs);
+  return {
+    notifications: querySnapshot.docs.map(prepareDocs),
+    hasNext: reqQuery?.limit * reqQuery?.page <= notifcationCount,
+    hasPre: offset > 0
+  };
 }
 
 /**
@@ -35,13 +39,11 @@ export async function getByShopId(shopId, reqQuery) {
  */
 export async function getByShopDomain(shopDomain, reqQuery) {
   let query = notifiactionsCollection;
+
   query = query.where('shopDomain', '==', shopDomain);
-  if (reqQuery.sort) {
-    query = query.orderBy('timestamp', reqQuery.sort);
-  }
-  if (reqQuery.limit) {
-    query = query.limit(Number(reqQuery.limit));
-  }
+  query = query.orderBy('timestamp', reqQuery.sort ? reqQuery.sort : 'desc');
+  query = query.limit(Number(reqQuery.limit ? reqQuery.limit : 30));
+
   const querySnapshot = await query.get();
   return querySnapshot.docs.map(prepareDocs);
 }
