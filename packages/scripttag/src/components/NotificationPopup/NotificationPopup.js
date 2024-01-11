@@ -12,6 +12,7 @@ const NotificationPopup = ({
   productImage = 'https://dotilo.com/image/catalog/coupon/aotron/den.jpg',
   truncateProductName = false,
   hideTimeAgo = false,
+  position = 'bottom-left',
   displayDuration
 }) => {
   const [fade, setFade] = React.useState(false);
@@ -23,7 +24,7 @@ const NotificationPopup = ({
     return () => clearTimeout(timeOut);
   }, []);
   return (
-    <div className={`Avava-SP__Wrapper animated ${fade ? 'fadeInUp' : ''}`}>
+    <div className={`Avava-SP__Wrapper animated ${fade ? 'fadeInUp' : ''} ${position}`}>
       <div className="Avava-SP__Inner">
         <div className="Avava-SP__Container">
           <a href="#" className={'Avava-SP__LinkWrapper'}>
@@ -84,6 +85,7 @@ NotificationPopup.propTypes = {
   options: PropTypes.object,
   truncateProductName: PropTypes.bool,
   hideTimeAgo: PropTypes.bool,
+  position: PropTypes.string,
   displayDuration: PropTypes.number
 };
 export default NotificationPopup;

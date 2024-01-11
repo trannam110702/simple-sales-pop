@@ -14,19 +14,14 @@ export default class DisplayManager {
     this.notifications = notifications.slice(0, settings.maxPopsDisplay);
     this.settings = settings;
 
-    if (this.isShowPopUp(settings)) {
-      this.insertContainer(settings.position);
-      await delay(settings.firstDelay * 1000);
+    if (!this.isShowPopUp(settings)) return false;
 
-      // for (const notifcation of this, notifications) {
-      //   // await this.displayOnePopUp(notifcation, settings);
-      // }
-
-      notifications.forEach(async (notification, index) => {
-        await delay((settings.popsInterval + settings.displayDuration) * index * 1000);
-        await this.displayOnePopUp(notification, settings);
-      });
-    }
+    this.insertContainer();
+    await delay(settings.firstDelay * 1000);
+    notifications.forEach(async (notification, index) => {
+      await delay((settings.popsInterval + settings.displayDuration) * index * 1000);
+      await this.displayOnePopUp(notification, settings);
+    });
   }
 
   fadeOut() {
@@ -42,6 +37,7 @@ export default class DisplayManager {
         truncateProductName={settings.truncateProductName}
         hideTimeAgo={settings.hideTimeAgo}
         displayDuration={settings.displayDuration}
+        position={settings.position}
       />,
       container
     );
@@ -56,10 +52,10 @@ export default class DisplayManager {
     if (settings.allowShow === 'specific' && includedUrls.includes(url)) return true;
   }
 
-  insertContainer(position) {
+  insertContainer() {
     const popupEl = document.createElement('div');
     popupEl.id = `Avada-SalePop`;
-    popupEl.classList.add('Avada-SalePop__OuterWrapper', position);
+    popupEl.classList.add('Avada-SalePop__OuterWrapper');
     const targetEl = document.querySelector('body').firstChild;
     if (targetEl) {
       insertAfter(popupEl, targetEl);

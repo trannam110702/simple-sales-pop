@@ -36,13 +36,11 @@ const syncOrdersToNotifications = async (shopify, shopInfo) => {
 };
 
 export const createNotificationsFromOrders = async (orders, shopInfo) => {
-  const notifications = await Promise.all(
-    orders.map(item => lineItemToNotification(shopInfo, item.order))
-  );
+  const notifications = orders.map(item => lineItemToNotification(shopInfo, item.order));
   return createNotifications(shopInfo.id, notifications);
 };
 
-const lineItemToNotification = async (shopInfo, order) => {
+const lineItemToNotification = (shopInfo, order) => {
   return {
     city: order.shippingAddress.city,
     country: order.shippingAddress.country,
